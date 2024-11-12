@@ -6,7 +6,7 @@ import { FaUserCircle } from "react-icons/fa";
 import { useSession, signOut } from "next-auth/react";
 
 const Navbar: React.FC = () => {
-  const { data: session } = useSession();
+  // const { data: session } = useSession();
 
   return (
     <nav className="bg-white shadow-md px-6 py-4 flex items-center justify-between">
@@ -19,7 +19,8 @@ const Navbar: React.FC = () => {
       </div>
 
       <div className="flex items-center space-x-2">
-        {session ? (
+        {
+        /* {session ? (
           <>
             <span className="text-gray-600">Xin chào, {session.user?.name}</span>
             <FaUserCircle className="text-2xl text-gray-600" />
@@ -27,7 +28,8 @@ const Navbar: React.FC = () => {
               Đăng xuất
             </button>
           </>
-        ) : (
+        ) :  */
+        (
           <>
             <span className="text-gray-600">Đăng nhập</span>
             <FaUserCircle className="text-2xl text-gray-600" />

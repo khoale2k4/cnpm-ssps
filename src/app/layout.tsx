@@ -13,9 +13,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="vi">
       <body>
-        <SessionProviderWrapper>
+        {/* <SessionProviderWrapper> */}
           <Layout>{children}</Layout>
-        </SessionProviderWrapper>
+        {/* </SessionProviderWrapper> */}
       </body>
     </html>
   );
