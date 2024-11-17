@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
+  --background: #a8e8f3;
   --foreground: #171717;
 }
 
@@ -14,8 +14,66 @@
   }
 }
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Baloo Bhaina 2", cursive;
+  font-weight: 600;
+  background-color: #eafaff; /* Màu nền */
+  margin: 0; /* Loại bỏ khoảng cách mặc định */
+  padding: 0; /* Loại bỏ khoảng cách mặc định */
+  color: var(--foreground); /* 
+  Màu chữ */
+  box-sizing: border-box; /* Đảm bảo padding và border không làm tăng thêm chiều rộng */
+}
+
+.header {
+  display: flex;
+  height: 40;
+  background-color: rgb(255, 255, 255); /* Nền trắng */
+  justify-content: space-between; /* Căn chỉnh các phần tử cách đều nhau */
+  align-items: center; /* Căn giữa theo chiều dọc */
+  border-bottom-left-radius: 12px; /* Bo tròn góc dưới bên trái */
+  border-bottom-right-radius: 12px; /* Bo tròn góc dưới bên phải */
+}
+
+.login-button {
+  padding: 10px 20px; /* Khoảng đệm trong nút */
+  background-color: #1a73e8; /* Màu nền nút */
+  color: white; /* Màu chữ */
+  border: none; /* Không viền */
+  border-radius: 5px; /* Bo góc nút */
+  cursor: pointer; /* Thay đổi con trỏ khi hover */
+  font-size: 26px; /* Kích thước chữ */
+  transition: background-color 0.3s ease; /* Hiệu ứng chuyển đổi màu nền */
+}
+
+.button-container {
+  display: flex; /* Sử dụng Flexbox */
+  justify-content: center; /* Căn giữa các phần tử theo chiều ngang */
+  gap: 40px; /* Khoảng cách giữa các nút */
+}
+
+.btn {
+  min-width: 300px; /* Đặt chiều rộng tối thiểu */
+  display: flex; /* Kích hoạt Flexbox */
+  flex-direction: column; /* Sắp xếp các phần tử theo chiều dọc */
+  align-items: center; /* Căn giữa các phần tử theo chiều ngang */
+  text-align: center;
+  padding: 5px 30px; /* Khoảng đệm trong nút */
+  background-color: #ffffff; /* Màu nền nút */
+  color: rgb(0, 0, 0); /* Màu chữ */
+  border: 2px solid #0c5bbf; /* Viền màu xanh đậm, dày 2px */
+  border-radius: 45px; /* Bo góc nút */
+  cursor: pointer; /* Thay đổi con trỏ khi hover */
+  margin: 0 10px; /* Khoảng cách hai bên của nút */
+  font-size: 26px;
+}
+
+.btn:hover {
+  background-color: #949494; /* Màu nền đậm hơn khi hover */
 }
