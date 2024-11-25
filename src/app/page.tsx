@@ -1,22 +1,87 @@
-// src/app/page.tsx
-import Link from 'next/link';
+// src/app/home/mainpage.tsx
 
+import React from "react";
+import Link from "next/link";
 
-export default function Home() {
+export default function mainpage() {
   return (
-    <div className="min-h-screen flex flex-col items-center bg-blue-50">
-      <div className="flex flex-col items-center justify-center mt-16 bg-white p-8 rounded-lg shadow-md border border-gray-300">
-        <img src="/images/logo.png" alt="Logo" className="h-20 mb-6" />
-        <h2 className="text-lg font-semibold mb-2 text-center">Đăng nhập bằng tài khoản của bạn trên:</h2>
-        <div className="w-full border-t border-gray-300 my-4"></div>
-        <button className="flex items-center justify-center w-full px-4 py-2 mb-3 bg-white border border-gray-300 rounded hover:bg-gray-100">
-          <img src="/images/logo.png" alt="HCMUT logo" className="h-6 w-6 mr-2" />
-          <span>Tài khoản HCMUT (HCMUT account)</span>
+    <div
+      className="mainpage"
+      style={{
+        fontFamily: "Baloo Bhaina 2 Regular",
+        padding: 100,
+        display: "flex" /* Kích hoạt Flexbox */,
+        flexDirection: "column" /* Sắp xếp các phần tử theo chiều dọc */,
+        alignItems: "center" /* Căn giữa các phần tử theo chiều ngang */,
+        textAlign: "center",
+        gap: 70,
+      }}
+    >
+      <div
+        className="text"
+        style={{
+          fontSize: 40,
+        }}
+      >
+        <h1 style={{ color: "#4441D8" }}>
+          DỊCH VỤ SMART PRINTING CHO SINH VIÊN
+        </h1>
+      </div>
+      <div className="button-container">
+        <button className="btn">
+          <div className="image">
+            <img
+              src="images\printer.jpg"
+              alt="Printer"
+              height={130}
+              width={130}
+            />
+          </div>
+          <Link href="/" className="navLink">
+            IN TÀI LIỆU
+          </Link>{" "}
         </button>
-        <button className="flex items-center justify-center w-full px-4 py-2 mb-3 bg-white border border-gray-300 rounded hover:bg-gray-100">
-          <span>Admin</span>
+        <button className="btn">
+          <div className="image">
+            <img
+              src="images\buypage.jpg"
+              alt="Printer"
+              height={130}
+              width={130}
+            />
+          </div>
+          <Link href="/about" className="navLink">
+            MUA TRANG IN
+          </Link>{" "}
         </button>
-        <div className="w-full border-t border-gray-300 mt-4"></div>
+        <button className="btn">
+          <div className="image">
+            <img
+              src="images\history.jpg"
+              alt="Printer"
+              height={130}
+              width={130}
+            />
+          </div>
+          <Link href="/contact" className="navLink">
+            LỊCH SỬ IN
+          </Link>{" "}
+        </button>
+        <button className="btn">
+          <div className="image">
+            <img
+              src="images\history.jpg"
+              alt="Printer"
+              height={130}
+              width={130}
+            />
+          </div>
+          <Link href="/contact" className="navLink">
+            <h2>
+              LỊCH SỬ <p>THANH TOÁN</p>
+            </h2>
+          </Link>{" "}
+        </button>
       </div>
     </div>
   );
