@@ -15,6 +15,7 @@ export default function login() {
         <h2 className="text-lg font-semibold mb-2 text-center">
           Đăng nhập bằng tài khoản của bạn trên:
         </h2>
+
         <div className="w-full border-t border-gray-300 my-4"></div>
         <button className="flex items-center justify-center w-full px-4 py-2 mb-3 bg-white border border-gray-300 rounded hover:bg-gray-100">
           <img
@@ -24,7 +25,10 @@ export default function login() {
             height={60}
             width={50}
           />
-          <span>Tài khoản HCMUT (HCMUT account)</span>
+          <Link href="/sso" className="navLink">
+            <h2>Tài khoản HCMUT (HCMUT account)</h2>
+          </Link>{" "}
+          <span></span>
         </button>
         <button className="flex items-center justify-center w-full px-4 py-2 mb-3 bg-white border border-gray-300 rounded hover:bg-gray-100">
           <span>Admin</span>

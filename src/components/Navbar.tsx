@@ -4,10 +4,13 @@
 import React from "react";
 import { FaUserCircle } from "react-icons/fa";
 import { useSession, signOut, signIn } from "next-auth/react";
+import Link from "next/link";
 
 const Navbar: React.FC = () => {
-  //const { data: session } = useSession();
-  return 0 ? (
+  //const session = useSession();
+  const session = 0;
+  const isSSO = 1;
+  return isSSO ? (
     <>
       {
         <nav
@@ -51,12 +54,12 @@ const Navbar: React.FC = () => {
               fontSize: 20,
             }}
           >
-            {0 ? (
+            {session ? (
               <>
                 <span className="text-gray-600">Xin chào, {"AHIHI123"}</span>
                 <FaUserCircle className="text-3x1 text-gray-600" />
                 <button
-                  onClick={() => signOut()}
+                  //onClick={() => signOut()}
                   className="px-3 text-blue-500 hover:underline"
                 >
                   Đăng xuất
@@ -66,11 +69,10 @@ const Navbar: React.FC = () => {
               <>
                 <span className="text-gray-600"></span>
                 <FaUserCircle className="text-3x1 text-gray-600" />
-                <button
-                  onClick={() => signIn()}
-                  className="text-blue-500 hover:underline"
-                >
-                  Đăng nhập
+                <button className="text-blue-500 hover:underline">
+                  <Link href="/auth/login" className="navLink">
+                    <h2>Đăng nhập</h2>
+                  </Link>
                 </button>
               </>
             )}

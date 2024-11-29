@@ -35,7 +35,7 @@ function guest() {
             fontFamily: "Finger Paint",
           }}
         >
-          <h2 style={{ fontSize: "64x" }}>Student Smart</h2>{" "}
+          <div style={{ fontSize: "64px" }}>Student Smart</div>{" "}
           <div style={{ fontSize: "64px" }}>
             {" "}
             Printing Service <span style={{ fontSize: "26px" }}>
@@ -55,7 +55,7 @@ function guest() {
           }}
         >
           <p>Đăng nhập để sử dụng dịch vụ</p>
-          <Link href="./home/login" className="navLink">
+          <Link href="auth/login" className="navLink">
             <button className="login-button">Đăng nhập ngay</button>
           </Link>
         </div>

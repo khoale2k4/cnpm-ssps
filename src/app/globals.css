@@ -55,11 +55,13 @@ body {
 .button-container {
   display: flex; /* Sử dụng Flexbox */
   justify-content: center; /* Căn giữa các phần tử theo chiều ngang */
-  gap: 40px; /* Khoảng cách giữa các nút */
+  align-items: center;
+  gap: 35px; /* Khoảng cách giữa các nút */
 }
 
 .btn {
-  min-width: 300px; /* Đặt chiều rộng tối thiểu */
+  min-width: 250px; /* Đặt chiều rộng tối thiểu */
+  min-height: 220px; /* Đặt chiều rộng tối thiểu */
   display: flex; /* Kích hoạt Flexbox */
   flex-direction: column; /* Sắp xếp các phần tử theo chiều dọc */
   align-items: center; /* Căn giữa các phần tử theo chiều ngang */
