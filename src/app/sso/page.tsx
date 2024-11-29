@@ -1,9 +1,8 @@
 "use client";
-"use strict";
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Auth } from "@/lib/main"; // Import class Auth từ main.ts
+import { Auth } from "@/main"; // Import class Auth từ main.ts
 import Link from "next/link";
 
 export default function SSO() {
