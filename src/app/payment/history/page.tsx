@@ -1,43 +1,59 @@
-"use client"
-import DataTable from '@/components/DataTable';
-import SearchBar from '@/components/SearhBar';
-import React, { useState } from 'react';
-import { FaFilter, FaSearch } from 'react-icons/fa';
+"use client";
+import DataTable from "@/components/DataTable";
+import SearchBar from "@/components/SearhBar";
+import { Payment } from "@/main";
+import React, { useState, useEffect } from "react";
+import { FaFilter, FaSearch } from "react-icons/fa";
 
 const ITEMS_PER_PAGE = 5;
 
 function PaymentHistory() {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState("");
-    const paymentHistory = [
-        { pages: "10 trang", date: "22/09/2024", amount: "2000 đồng", status: "Đã thanh toán" },
-        { pages: "20 trang", date: "21/09/2024", amount: "4000 đồng", status: "Đã thanh toán" },
-        { pages: "50 trang", date: "21/09/2024", amount: "10000 đồng", status: "Đã thanh toán" },
-        { pages: "30 trang", date: "21/09/2024", amount: "6000 đồng", status: "Thanh toán thất bại" },
-        { pages: "100 trang", date: "21/09/2024", amount: "20000 đồng", status: "Đã thanh toán" },
-        { pages: "20 trang", date: "21/09/2024", amount: "4000 đồng", status: "Đã thanh toán" },
-        { pages: "50 trang", date: "21/09/2024", amount: "10000 đồng", status: "Đã thanh toán" },
-        { pages: "30 trang", date: "21/09/2024", amount: "6000 đồng", status: "Thanh toán thất bại" },
-        { pages: "20 trang", date: "21/09/2024", amount: "4000 đồng", status: "Đã thanh toán" },
-        { pages: "50 trang", date: "21/09/2024", amount: "10000 đồng", status: "Đã thanh toán" },
-        { pages: "30 trang", date: "21/09/2024", amount: "6000 đồng", status: "Thanh toán thất bại" },
-        { pages: "50 trang", date: "21/09/2024", amount: "10000 đồng", status: "Đã thanh toán" },
-        { pages: "30 trang", date: "21/09/2024", amount: "6000 đồng", status: "Thanh toán thất bại" },
-        { pages: "100 trang", date: "21/09/2024", amount: "20000 đồng", status: "Đã thanh toán" },
-        { pages: "50 trang", date: "21/09/2024", amount: "10000 đồng", status: "Đã thanh toán" },
-        { pages: "30 trang", date: "21/09/2024", amount: "6000 đồng", status: "Thanh toán thất bại" },
-        { pages: "100 trang", date: "21/09/2024", amount: "20000 đồng", status: "Đã thanh toán" },
-        { pages: "20 trang", date: "21/09/2024", amount: "4000 đồng", status: "Đã thanh toán" },
-        { pages: "50 trang", date: "21/09/2024", amount: "10000 đồng", status: "Đã thanh toán" },
-        { pages: "30 trang", date: "21/09/2024", amount: "6000 đồng", status: "Thanh toán thất bại" },
-        { pages: "30 trang", date: "21/09/2024", amount: "6000 đồng", status: "Thanh toán thất bại" },
-        { pages: "100 trang", date: "21/09/2024", amount: "20000 đồng", status: "Đã thanh toán" },
-        { pages: "30 trang", date: "21/09/2024", amount: "6000 đồng", status: "Thanh toán thất bại" },
-        { pages: "100 trang", date: "21/09/2024", amount: "20000 đồng", status: "Đã thanh toán" },
-        // ... thêm nhiều dữ liệu khác nếu cần
-    ];
+    const [paymentHistory, setPaymentHistory] = useState<any[]>([]); // Store fetched payment history
+    const [loading, setLoading] = useState<boolean>(false); // Handle loading state
+    const [error, setError] = useState<string | null>(null); // Handle error state
 
-    const totalPages = Math.floor(paymentHistory.length / ITEMS_PER_PAGE);
+    // Fetch payment history data from API
+    useEffect(() => {
+        const fetchPaymentHistory = async () => {
+          setLoading(true); // Start loading
+    
+          const paymentService = new Payment();
+          try {
+            const token = localStorage.getItem("accessToken");
+            const studentId = Number(localStorage.getItem("userId"));
+            const response = await paymentService.getStudentPayment(studentId, token ?? "");
+    
+            if (response == undefined || !response.success) {
+              throw new Error("Failed to fetch payment history");
+            }
+    
+            // Lấy dữ liệu và thực hiện chuyển đổi
+            const data = response.data.map((item: any) => ({
+              ...item,
+              // Chuyển đổi ngày tháng sang định dạng đẹp mắt
+              dateTime: new Date(item.dateTime).toLocaleString('vi-VN', {
+                weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+              }),
+              // Chuyển đổi status thành "Đã thanh toán" hoặc "Chưa thanh toán"
+              status: item.status ? "Đã thanh toán" : "Chưa thanh toán",
+              // Chuyển giá trị value sang number (nếu cần)
+              value: Number(item.value),
+            }));
+    
+            setPaymentHistory(data); // Set payment history data
+          } catch (error) {
+            console.log(error);
+          } finally {
+            setLoading(false); // End loading
+          }
+        };
+    
+        fetchPaymentHistory();
+      }, []);
+
+    const totalPages = Math.ceil(paymentHistory.length / ITEMS_PER_PAGE);
 
     const goToNextPage = () => {
         setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages));
@@ -48,25 +64,32 @@ function PaymentHistory() {
     };
 
     const printColumns = [
-        { header: "Số trang", accessor: "pages" },
-        { header: "Ngày in", accessor: "date" },
-        { header: "Số lượng", accessor: "amount" },
-        { header: "Trạng thái", accessor: "status" },
+        { header: "Mã giao dịch", accessor: "transactionId" },
+        { header: "Ngày thanh toán", accessor: "dateTime" },
+        { header: "Số trang", accessor: "numberOfPages" },
+        { header: "Số tiền", accessor: "value" },
+        // { header: "Trạng thái", accessor: "status" },
     ];
 
-
     // Lọc dữ liệu dựa trên từ khóa tìm kiếm
-    const filteredData = paymentHistory.filter(item =>
-        Object.values(item).some(value =>
+    const filteredData = paymentHistory.filter((item) =>
+        Object.values(item).some((value) =>
             value.toString().toLowerCase().includes(searchTerm.toLowerCase())
         )
     );
-
 
     const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(event.target.value);
         setCurrentPage(1); // Đặt lại trang về 1 khi tìm kiếm
     };
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div>Error: {error}</div>;
+    }
 
     return (
         <div className="min-h-screen bg-blue-50 p-6">

@@ -1,17 +1,21 @@
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosResponse } from 'axios'
 import {
-  createSystemConfigDto,
+  CreateSystemConfigDto,
   CreatePrinterDto,
   UpdatePaperAfterPrintingDto,
   UpdatePrinter,
-  printFileDto,
   CreateUserDto,
   GetCountDto,
   GetPrinterToPrintDto,
   LoginInfoDto,
-} from "./interface";
+  SearchAvailableDto,
+  SearchPayload,
+  PrintFileDto,
+  CreatePayemntDto
+} from './interface'
 
-const hostURL = "htpp://localhost:3000/v1";
+
+const hostURL = "http://localhost:3001/v1";
 
 const customHeader = (token: string | null) => {
   if (token) {
@@ -19,7 +23,7 @@ const customHeader = (token: string | null) => {
       withCredentials: true,
       validateStatus: (status: any) => status >= 200 && status <= 500,
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`
       },
     };
   }
@@ -53,113 +57,140 @@ export class SystemConfiguration {
     this.baseUrl = `${hostURL}/systemConfiguration`;
   }
 
-  async createSystemConfiguration(
-    createInfo: createSystemConfigDto,
-    token: string
-  ) {
+  async createSystemConfiguration(createInfo: CreateSystemConfigDto, token: string) {
     try {
-      const response: AxiosResponse = await axios.post(
-        `${this.baseUrl}/create`,
-        createInfo,
-        customHeader(token)
-      );
+      const response: AxiosResponse = await axios.post(`${this.baseUrl}/create`, createInfo, customHeader(token));
 
       return processResponse(response);
-    } catch (error) {
-      processError(error);
     }
+    catch (error) {
+      processError(error)
+
+    }
+
   }
 
   async getAllSystemConfiguration(token: string) {
     try {
-      const response: AxiosResponse = await axios.get(
-        `${this.baseUrl}/searchAll`,
-        customHeader(token)
-      );
+      const response: AxiosResponse = await axios.get(`${this.baseUrl}/searchAll`, customHeader(token));
 
       return processResponse(response);
-    } catch (error) {
-      processError(error);
     }
+    catch (error) {
+      processError(error)
+
+    }
+
   }
 
   async getNewestSystemConfiguration(token: string) {
     try {
-      const response: AxiosResponse = await axios.get(
-        `${this.baseUrl}/searchNewest`,
-        customHeader(token)
-      );
+      const response: AxiosResponse = await axios.get(`${this.baseUrl}/searchNewest`, customHeader(token));
 
       return processResponse(response);
-    } catch (error) {
-      processError(error);
     }
+    catch (error) {
+      processError(error)
+
+    }
+
   }
+
 }
 
-export class Printer {
+export class PrinterOperation {
   private baseUrl: string;
   constructor() {
-    this.baseUrl = `${hostURL}/printer`;
+    this.baseUrl = `${hostURL}/printer`
   }
 
   async createPrinter(createPrinterInfo: CreatePrinterDto, token: string) {
     try {
-      const response: AxiosResponse = await axios.post(
-        `${this.baseUrl}/create`,
-        createPrinterInfo,
-        customHeader(token)
-      );
+      const response: AxiosResponse = await axios.post(`${this.baseUrl}/create`, createPrinterInfo, customHeader(token))
 
       return processResponse(response);
-    } catch (error) {
-      processError(error);
+    }
+    catch (error) {
+      processError(error)
+
     }
   }
 
-  async searchPrinter(token: string) {
+
+  async searchPrinter(searchPayload: SearchPayload, token: string) {
     try {
-      const response: AxiosResponse = await axios.get(
-        `${this.baseUrl}/search`,
-        customHeader(token)
-      );
+      const response: AxiosResponse = await axios.post(`${this.baseUrl}/search`, searchPayload, customHeader(token))
 
       return processResponse(response);
-    } catch (error) {
-      processError(error);
+    }
+    catch (error) {
+      processError(error)
+
     }
   }
 
-  async updatePaperAfterPrinting(
-    updateInfo: UpdatePaperAfterPrintingDto,
-    token: string
-  ) {
+  async printFileCheck(printerId: number, payload: PrintFileDto, token: string) {
     try {
-      const response: AxiosResponse = await axios.put(
-        `${this.baseUrl}/update-paper-after-printing`,
-        updateInfo,
-        customHeader(token)
-      );
+      const response: AxiosResponse = await axios.post(`${this.baseUrl}/print/check/${printerId}`, payload, customHeader(token))
 
       return processResponse(response);
-    } catch (error) {
+    }
+    catch (error) {
+      processError(error)
+
+    }
+  }
+
+  async printFile(printerId: number, payload: PrintFileDto, token: string) {
+    try {
+      const response: AxiosResponse = await axios.post(`${this.baseUrl}/print/${printerId}`, payload, customHeader(token))
+
+      return processResponse(response);
+    }
+    catch (error) {
+      processError(error)
+
+    }
+  }
+
+
+  async searchAvailablePrinter(searchAvailableDto: SearchAvailableDto,token: string) {
+    try {
+      const response: AxiosResponse = await axios.post(`${this.baseUrl}/search/available`, searchAvailableDto, customHeader(token))
+
+      return processResponse(response);
+    }
+    catch (error) {
       processError(error);
     }
   }
+
+
+  async updatePaperAfterPrinting(updateInfo: UpdatePaperAfterPrintingDto, token: string) {
+    try {
+      const response: AxiosResponse = await axios.put(`${this.baseUrl}/update-paper-after-printing`, updateInfo, customHeader(token))
+
+      return processResponse(response);
+    }
+    catch (error) {
+      processError(error)
+
+    }
+  }
+
 
   async updatePrinter(updateInfo: UpdatePrinter, token: string) {
     try {
-      const response: AxiosResponse = await axios.put(
-        `${this.baseUrl}/update`,
-        updateInfo,
-        customHeader(token)
-      );
+      const response: AxiosResponse = await axios.put(`${this.baseUrl}/update`, updateInfo, customHeader(token))
 
       return processResponse(response);
-    } catch (error) {
-      processError(error);
+    }
+    catch (error) {
+      processError(error)
+
     }
   }
+
 
   async getNumberOfPrinter(payload: GetCountDto, token: string) {
     try {
@@ -167,55 +198,56 @@ export class Printer {
         params: payload,
         withCredentials: true,
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+          Authorization: `Bearer ${token}`
+        }
+      })
 
       return processResponse(response);
-    } catch (error) {
-      processError(error);
+    }
+    catch (error) {
+      processError(error)
+
     }
   }
 
   async getPrinterToPrint(payload: GetPrinterToPrintDto, token: string) {
     try {
-      const response: AxiosResponse = await axios.get(
-        `${this.baseUrl}/searchToPrint`,
-        {
-          params: payload,
-          withCredentials: true,
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+      const response: AxiosResponse = await axios.get(`${this.baseUrl}/searchToPrint`, {
+        params: payload,
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token}`
         }
-      );
+      })
 
       return processResponse(response);
-    } catch (error) {
-      processError(error);
+    }
+    catch (error) {
+      processError(error)
+
     }
   }
 
   async deletePrinter(printer_id: number, token: string) {
     try {
-      const response: AxiosResponse = await axios.delete(
-        `${this.baseUrl}/delete`,
-        {
-          params: {
-            id: printer_id,
-          },
-          withCredentials: true,
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+      const response: AxiosResponse = await axios.delete(`${this.baseUrl}/delete`, {
+        params: {
+          id: printer_id
+        },
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token}`
         }
-      );
+      })
 
       return processResponse(response);
-    } catch (error) {
-      processError(error);
+    }
+    catch (error) {
+      processError(error)
+
     }
   }
+
 }
 
 export class FileOperation {
@@ -224,55 +256,96 @@ export class FileOperation {
     this.baseUrl = `${hostURL}/file`;
   }
 
-  async uploadFile(fileUpload: File, printInfo: printFileDto, token: string) {
+  async uploadFile(fileUpload: File, token: string) {
     try {
       const formData = new FormData();
-      formData.append("file", fileUpload);
+      formData.append('file', fileUpload);
 
-      const response: AxiosResponse = await axios.post(
-        `${this.baseUrl}`,
-        printInfo,
-        customHeader(token)
-      );
+      const response: AxiosResponse = await axios.post(`${this.baseUrl}`, formData, customHeader(token))
 
       return processResponse(response);
-    } catch (error) {
-      processError(error);
+    }
+    catch (error) {
+      processError(error)
+
     }
   }
 
   async getFile(fileId: string, token: string) {
     try {
-      const response: AxiosResponse = await axios.get(
-        `${this.baseUrl}/${fileId}`,
-        customHeader(token)
-      );
+
+      const response: AxiosResponse = await axios.get(`${this.baseUrl}/${fileId}`, customHeader(token))
 
       return processResponse(response);
-    } catch (error) {
-      processError(error);
+    }
+    catch (error) {
+      processError(error)
+
     }
   }
+
+
 }
 
-export class History {
+export class HistoryOperation {
   private baseUrl: string;
   constructor() {
-    this.baseUrl = `${hostURL}/printingHistory`;
+    this.baseUrl = `${hostURL}/history/print`;
   }
 
-  async viewPrintingHistory(student_id: string, token: string) {
+  async getOne(printHistoryId: number, token: string) {
     try {
-      const response: AxiosResponse = await axios.get(
-        `${this.baseUrl}/view/${student_id}`,
-        customHeader(token)
-      );
+
+      const response: AxiosResponse = await axios.get(`${this.baseUrl}/${printHistoryId}`, customHeader(token))
 
       return processResponse(response);
-    } catch (error) {
-      processError(error);
+    }
+    catch (error) {
+      processError(error)
+
     }
   }
+
+
+  async getPrintingStudentHistory(studentId: number, token: string) {
+    try {
+
+      const response: AxiosResponse = await axios.get(`${this.baseUrl}/student/${studentId}`, customHeader(token))
+
+      return processResponse(response);
+    }
+    catch (error) {
+      processError(error)
+
+    }
+  }
+
+  async getAll(token: string) {
+    try {
+
+      const response: AxiosResponse = await axios.get(`${this.baseUrl}/`, customHeader(token))
+
+      return processResponse(response);
+    }
+    catch (error) {
+      processError(error)
+
+    }
+  }
+
+  async getPrinterHistory(printerId: number, token: string) {
+    try {
+
+      const response: AxiosResponse = await axios.get(`${this.baseUrl}/printer/${printerId}`, customHeader(token))
+
+      return processResponse(response);
+    }
+    catch (error) {
+      processError(error)
+
+    }
+  }
+
 }
 
 export class User {
@@ -283,41 +356,38 @@ export class User {
 
   async createUser(createInfo: CreateUserDto, token: string) {
     try {
-      const response: AxiosResponse = await axios.post(
-        `${this.baseUrl}/create`,
-        createInfo,
-        customHeader(token)
-      );
+      const response: AxiosResponse = await axios.post(`${this.baseUrl}/create`, createInfo, customHeader(token))
 
       return processResponse(response);
-    } catch (error) {
-      processError(error);
+    }
+    catch (error) {
+      processError(error)
+
     }
   }
 
+
   async getPaper(student_id: string, token: string) {
     try {
-      const response: AxiosResponse = await axios.get(
-        `${this.baseUrl}/paper/search/${student_id}`,
-        customHeader(token)
-      );
+      const response: AxiosResponse = await axios.get(`${this.baseUrl}/paper/search/${student_id}`, customHeader(token))
 
       return processResponse(response);
-    } catch (error) {
-      processError(error);
+    }
+    catch (error) {
+      processError(error)
+
     }
   }
 
   async getInfo(student_id: string, token: string) {
     try {
-      const response: AxiosResponse = await axios.get(
-        `${this.baseUrl}/search/${student_id}`,
-        customHeader(token)
-      );
+      const response: AxiosResponse = await axios.get(`${this.baseUrl}/search/${student_id}`, customHeader(token))
 
       return processResponse(response);
-    } catch (error) {
-      processError(error);
+    }
+    catch (error) {
+      processError(error)
+
     }
   }
 }
@@ -325,58 +395,89 @@ export class User {
 export class Payment {
   private baseUrl: string;
   constructor() {
-    this.baseUrl = `${hostURL}/payment`;
+    this.baseUrl =  `${hostURL}/payment`;
   }
 
   async viewPayment(student_id: string, token: string) {
     try {
-      const response: AxiosResponse = await axios.get(
-        `${this.baseUrl}/view/${student_id}`,
-        customHeader(token)
-      );
+
+      const response: AxiosResponse = await axios.get(`${this.baseUrl}/view/${student_id}`, customHeader(token))
 
       return processResponse(response);
-    } catch (error) {
-      processError(error);
+    }
+    catch (error) {
+      processError(error)
+
+    }
+  }
+
+  async create(payload: CreatePayemntDto, token: string) {
+    try {
+
+      const response: AxiosResponse = await axios.post(`${this.baseUrl}/create`, payload, customHeader(token))
+
+      return processResponse(response);
+    }
+    catch (error) {
+      processError(error)
+
+    }
+  }
+
+  async getAllPayment(token: string) {
+    try {
+
+      const response: AxiosResponse = await axios.get(`${this.baseUrl}/search`, customHeader(token))
+
+      return processResponse(response);
+    }
+    catch (error) {
+      processError(error)
+
+    }
+  }
+
+  async getStudentPayment(studentId: number, token: string) {
+    try {
+
+      const response: AxiosResponse = await axios.get(`${this.baseUrl}/search/student/${studentId}`, customHeader(token))
+
+      return processResponse(response);
+    }
+    catch (error) {
+      return processError(error)
+
     }
   }
 }
 
 export class Auth {
   private baseUrl: string;
-
   constructor() {
-    console.log("GỌI AUTH");
     this.baseUrl = `${hostURL}/auth`;
   }
 
   async login(payload: LoginInfoDto) {
-    console.log("Tronglogin");
     try {
-      const response: AxiosResponse = await axios.post(
-        `${this.baseUrl}/login`,
-        payload
-      );
-      console.log(response);
+      const response: AxiosResponse = await axios.post(`${this.baseUrl}/login`, payload)
 
       return processResponse(response);
-    } catch (error) {
-      console.log("Tronglogin");
-      console.log(error);
-      processError(error);
+    }
+    catch (error) {
+      processError(error)
+
     }
   }
 
   async signup(createInfo: CreateUserDto) {
     try {
-      const response: AxiosResponse = await axios.post(
-        `${this.baseUrl}/signup`,
-        createInfo
-      );
+      const response: AxiosResponse = await axios.post(`${this.baseUrl}/signup`, createInfo)
 
       return processResponse(response);
-    } catch (error) {
-      processError(error);
+    }
+    catch (error) {
+      processError(error)
+
     }
   }
 }

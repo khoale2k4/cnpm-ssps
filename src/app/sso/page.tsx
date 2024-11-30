@@ -4,12 +4,14 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Auth } from "@/main"; // Import class Auth từ main.ts
 import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
 
 export default function SSO() {
   const [username, setUsername] = useState<string>(""); // Tên tài khoản
   const [password, setPassword] = useState<string>(""); // Mật khẩu
   const [loading, setLoading] = useState<boolean>(false); // Trạng thái tải
   const [error, setErrorMessage] = useState<string | null>(null); // Lỗi nếu có
+  const { setLoggedIn } = useAuth();
   const router = useRouter(); // Dùng để điều hướng
 
   const authService = new Auth(); // Tạo instance của Auth
@@ -26,9 +28,13 @@ export default function SSO() {
       if (response?.success) {
         // Nếu đăng nhập thành công
         console.log("Đăng nhập thành công:", response.data);
+        setLoggedIn(true);
 
         // Lưu token hoặc thông tin người dùng vào localStorage/sessionStorage (nếu cần)
-        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("accessToken", response.data.accessToken);
+        localStorage.setItem("userId", response.data.user.ssoId.toString());
+        localStorage.setItem("userName", response.data.user.name); // Lưu tên người dùng
+
 
         // Điều hướng đến trang chính hoặc dashboard
         router.push("/");
@@ -105,7 +111,7 @@ export default function SSO() {
             </button>
           </form>
           {/* Link thay đổi mật khẩu */}
-          <div className="mt-4 text-sm text-gray-600">
+          {/* <div className="mt-4 text-sm text-gray-600">
             <p>
               <Link
                 href="/forgot-password"
@@ -114,7 +120,7 @@ export default function SSO() {
                 Thay đổi mật khẩu?
               </Link>
             </p>
-          </div>
+          </div> */}
         </section>
 
         {/* Cột phải: Lưu ý và hỗ trợ */}

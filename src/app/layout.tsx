@@ -1,7 +1,7 @@
 // src/app/layout.tsx
-
 import "./globals.css";
 import Layout from "../components/Layout";
+import { AuthProvider } from "../context/AuthContext";
 
 export const metadata = {
   title: "SSPS",
@@ -30,9 +30,9 @@ export default function RootLayout({
         />
       </head>
       <body>
-        {/* <SessionProviderWrapper> */}
-        <Layout>{children}</Layout>
-        {/* </SessionProviderWrapper> */}
+        <AuthProvider>
+          <Layout>{children}</Layout>
+        </AuthProvider>
       </body>
     </html>
   );
