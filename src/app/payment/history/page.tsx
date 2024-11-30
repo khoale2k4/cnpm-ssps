@@ -32,14 +32,13 @@ function PaymentHistory() {
             // Lấy dữ liệu và thực hiện chuyển đổi
             const data = response.data.map((item: any) => ({
               ...item,
-              // Chuyển đổi ngày tháng sang định dạng đẹp mắt
               dateTime: new Date(item.dateTime).toLocaleString('vi-VN', {
                 weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
               }),
-              // Chuyển đổi status thành "Đã thanh toán" hoặc "Chưa thanh toán"
-              status: item.status ? "Đã thanh toán" : "Chưa thanh toán",
-              // Chuyển giá trị value sang number (nếu cần)
-              value: Number(item.value),
+              value: Number(item.value).toLocaleString('vi-VN', {
+                style: 'currency',
+                currency: 'VND'
+              })
             }));
     
             setPaymentHistory(data); // Set payment history data
