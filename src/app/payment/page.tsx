@@ -79,7 +79,7 @@ export default function MuaTrangIn() {
 
 
   return (
-    <div className="flex flex-col items-center min-h-screen bg-blue-50 py-8">
+    <div className="flex flex-col items-center min-h-screen py-8">
       <h2 className="text-2xl font-bold text-blue-700 mb-6">Mua trang in</h2>
       <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
         <div className="mb-4">

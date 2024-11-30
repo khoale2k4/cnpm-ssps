@@ -91,7 +91,6 @@ function PaymentHistory() {
     }
 
     return (
-        <div className="min-h-screen bg-blue-50 p-6">
             <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-6">
                 <h1 className="text-2xl font-bold text-blue-600 mb-4">Lịch sử thanh toán</h1>
 
@@ -109,7 +108,6 @@ function PaymentHistory() {
                     handleNextPage={goToNextPage}
                 />
             </div>
-        </div>
     );
 }
 

@@ -71,7 +71,7 @@ export default function MuaTrangIn() {
     );
 
     return (
-        <div className="min-h-screen bg-blue-50 p-6">
+        <div className="min-h-screen p-6">
             <div className="mb-4">
                 <h1 className="text-2xl font-bold m-2 text-blue-700">In tài liệu</h1>
             </div>
