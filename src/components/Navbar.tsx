@@ -46,11 +46,12 @@ const Navbar: React.FC = () => {
 
   return (
     <nav
-      className="bg-white shadow-md px-0 py-0 flex items-center justify-between"
+      className="bg-white shadow-md px-0 py-0 flex items-center justify-between sticky top-0 z-10"
       style={{
         height: 60,
         borderBottomLeftRadius: 15,
         borderBottomRightRadius: 15,
+        backgroundColor: "white", // Đảm bảo nền navbar luôn trắng khi sticky
       }}
     >
       <div className="flex items-center space-x-3">
