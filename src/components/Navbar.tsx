@@ -34,6 +34,7 @@ const Navbar: React.FC = () => {
     localStorage.removeItem("userName");
     setLoggedIn(false);
     setUserName(null);
+    router.push("/unauth");
   };
 
   if (loading) {
