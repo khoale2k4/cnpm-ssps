@@ -54,7 +54,7 @@ const processError = (error: any) => {
 export class SystemConfiguration {
   private baseUrl: string;
   constructor() {
-    this.baseUrl = `${hostURL}/systemConfiguration`;
+    this.baseUrl = `${hostURL}/system`;
   }
 
   async createSystemConfiguration(createInfo: CreateSystemConfigDto, token: string) {
@@ -72,7 +72,7 @@ export class SystemConfiguration {
 
   async getAllSystemConfiguration(token: string) {
     try {
-      const response: AxiosResponse = await axios.get(`${this.baseUrl}/searchAll`, customHeader(token));
+      const response: AxiosResponse = await axios.get(`${this.baseUrl}/search`, customHeader(token));
 
       return processResponse(response);
     }
@@ -261,7 +261,7 @@ export class FileOperation {
       const formData = new FormData();
       formData.append('file', fileUpload);
 
-      const response: AxiosResponse = await axios.post(`${this.baseUrl}`, formData, customHeader(token))
+      const response: AxiosResponse = await axios.post(`${this.baseUrl}/upload`, formData, customHeader(token))
 
       return processResponse(response);
     }
