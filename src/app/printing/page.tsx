@@ -384,17 +384,19 @@ export default function FileUploader() {
                 {/* Khung chỉnh sửa và tải file */}
                 <div className="w-2/3 bg-white rounded-lg shadow-lg p-6 mr-4">
                     <div className="border-2 border-gray-300 rounded-lg p-4 mb-4">
-                        <h2 className="text-xl font-bold mb-4">Tải tài liệu</h2>
+                        <h2 className="text-xl font-bold mb-4 text-black">Tải tài liệu</h2>
                         <input type="file" multiple onChange={handleFileChange} />
                         <p className="mt-2 text-sm text-gray-600">
                             Chọn tập tin hoặc kéo thả tập tin tại đây
                         </p>
-                    </div><div className="flex justify-center items-center flex-row">
-                        <h1>Các loại file được phép upload</h1>
+                    </div>
+
+                    <div className="flex justify-center items-center flex-row">
+                        <h1 className="text-black">Các loại file được phép upload</h1>
                         {allowedFiles.map((fileType, index) => (
                             <div
-                                key={index} // Thêm thuộc tính key
-                                className="bg-gray-200 rounded-lg p-2 m-1"
+                                key={index}
+                                className="bg-gray-200 rounded-lg p-2 m-1 text-black"
                             >
                                 {getFileTypeName(fileType)}
                             </div>
@@ -470,18 +472,20 @@ export default function FileUploader() {
                 </div>
 
                 {/* Danh sách file */}
-                <div className="w-1/3 bg-gray-100 rounded-lg shadow-lg p-6">
-                    <h2 className="text-xl font-bold mb-4">Danh sách tệp</h2>
+                <div className="w-1/3 bg-white rounded-lg shadow-lg p-6">
+                    <h2 className="text-xl font-bold mb-4 text-black">Danh sách tệp</h2>
                     <ul className="space-y-2">
                         {selectedFiles.map((fileWithAttr, index) => (
                             <li
                                 key={index}
-                                className={`p-4 border rounded-lg flex justify-between items-center cursor-pointer ${currentFileIndex === index ? "bg-blue-100" : "bg-white"
+                                className={`p-4 border rounded-lg flex justify-between items-center cursor-pointer ${currentFileIndex === index ? "bg-blue-100" : "bg-gray-100"
                                     }`}
                                 onClick={() => handleSelectFile(index)}
                             >
                                 <div>
-                                    <span className="truncate font-medium">{fileWithAttr.file.name}</span>
+                                    <span className="truncate font-medium text-black">
+                                        {fileWithAttr.file.name}
+                                    </span>
                                     <span className="block text-sm text-gray-600">
                                         {fileWithAttr.uploadStatus === "uploading"
                                             ? "Đang tải..."
@@ -489,7 +493,6 @@ export default function FileUploader() {
                                                 ? "Tải lên thành công"
                                                 : "Tải lên thất bại. Lỗi: " + fileWithAttr.errorMsg}
                                     </span>
-                                    {/* Hiển thị trạng thái chấp nhận */}
                                     {fileWithAttr.isAccepted === 1 && (
                                         <span className="block text-sm text-green-500">Đã chấp nhận</span>
                                     )}
@@ -532,24 +535,24 @@ export default function FileUploader() {
                             />
                         )}
                         <button
-                            onClick={() => {
-                                fetchAvailablePrinters()
-                            }}
+                            onClick={() => fetchAvailablePrinters()}
                             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
                         >
                             Tìm máy in
                         </button>
-
+                        {/* Hiển thị máy in */}
                         {printerOptions.length > 0 ? (
                             <div>
-                                <label className="block text-sm font-medium">Máy in</label>
+                                <label className="block text-sm font-medium text-black">Máy in</label>
                                 <select
-                                    value={printerIndex ?? 0} // Giá trị hiện tại của máy in
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                                    onChange={(e) => setPrinterIndex(Number(e.target.value))} // Cập nhật printerIndex
+                                    value={printerIndex ?? 0}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg text-black"
+                                    onChange={(e) => setPrinterIndex(Number(e.target.value))}
                                 >
                                     <option value="" disabled>
-                                        {printerOptions.length ? "Chọn máy in" : "Không có máy in khả dụng"}
+                                        {printerOptions.length
+                                            ? "Chọn máy in"
+                                            : "Không có máy in khả dụng"}
                                     </option>
                                     {printerOptions.map((printer, index) => (
                                         <option key={printer.id} value={index}>
@@ -559,10 +562,8 @@ export default function FileUploader() {
                                 </select>
                             </div>
                         ) : (
-                            <p>Không có máy in khả dụng</p>
+                            <p className="text-black">Không có máy in khả dụng</p>
                         )}
-
-
                     </div>
                 </div>
             </div>
