@@ -2,7 +2,7 @@
 
 import { User } from "@/main";
 import { useState, useEffect } from "react";
-import listPrice from "../list_price.json"; // Import file JSON
+import listPrice from "../../../../SPSS_BE/src/modules/payment/list_price.json"; // Import file JSON
 import PaymentButton from "@/components/PaymentButton";
 
 export default function MuaTrangIn() {

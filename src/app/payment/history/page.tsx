@@ -38,7 +38,8 @@ function PaymentHistory() {
               value: Number(item.value).toLocaleString('vi-VN', {
                 style: 'currency',
                 currency: 'VND'
-              })
+              }),
+              status: item.status?"Đã thanh toán":"Chưa thanh toán"
             }));
     
             setPaymentHistory(data); // Set payment history data
@@ -67,7 +68,7 @@ function PaymentHistory() {
         { header: "Ngày thanh toán", accessor: "dateTime" },
         { header: "Số trang", accessor: "numberOfPages" },
         { header: "Số tiền", accessor: "value" },
-        // { header: "Trạng thái", accessor: "status" },
+        { header: "Trạng thái", accessor: "status" },
     ];
 
     // Lọc dữ liệu dựa trên từ khóa tìm kiếm

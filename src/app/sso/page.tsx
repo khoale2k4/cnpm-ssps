@@ -32,8 +32,11 @@ export default function SSO() {
 
         // Lưu token hoặc thông tin người dùng vào localStorage/sessionStorage (nếu cần)
         localStorage.setItem("accessToken", response.data.accessToken);
-        localStorage.setItem("userId", response.data.user.ssoId.toString());
-        localStorage.setItem("userName", response.data.user.name); // Lưu tên người dùng
+        localStorage.setItem("userId", response.data.user.student.id.toString());
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+
+        const event = new Event("storage");
+        window.dispatchEvent(event);
 
 
         // Điều hướng đến trang chính hoặc dashboard
@@ -102,9 +105,8 @@ export default function SSO() {
             {/* Nút đăng nhập */}
             <button
               type="submit"
-              className={`w-full bg-blue-600 text-white font-bold py-2 rounded-md hover:bg-blue-700 transition ${
-                loading ? "opacity-50 cursor-not-allowed" : ""
-              }`}
+              className={`w-full bg-blue-600 text-white font-bold py-2 rounded-md hover:bg-blue-700 transition ${loading ? "opacity-50 cursor-not-allowed" : ""
+                }`}
               disabled={loading}
             >
               {loading ? "Đang đăng nhập..." : "Đăng nhập"}

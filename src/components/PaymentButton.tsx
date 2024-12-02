@@ -30,6 +30,7 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({ selectedType, soTrangCanM
           numberCombo: soTrangCanMua,
         }),
       });
+      console.log(response);
 
       const data = await response.json();
       if (data.payUrl) {

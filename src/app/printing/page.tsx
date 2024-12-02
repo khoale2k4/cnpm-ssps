@@ -80,6 +80,7 @@ export default function FileUploader() {
         showRetry: false,
         onRetry: null,
     });
+    const [findingPrinter, setFindingPrinter] = useState(false);
 
     const fetchConfig = async () => {
         try {
@@ -111,7 +112,7 @@ export default function FileUploader() {
                 printer: "",
                 pageCount: 0,
                 orientation: "",
-                copies: "0",
+                copies: "1",
                 pageRange: "",
                 uploadStatus: "uploading",
                 errorMsg: "",
@@ -124,6 +125,8 @@ export default function FileUploader() {
                 // updateSearchAvailable(file.paperSize, file.pageCount, true);
             }
             );
+            setPrinterOptions([]);
+            setPrinterIndex(null);
         }
     };
 
@@ -187,14 +190,31 @@ export default function FileUploader() {
         // Lấy danh sách máy in và file hợp lệ
         const validPrinterFiles = getValidPrinterFiles(selectedFiles);
 
-        if (validPrinterFiles.length === 0) {
-            console.log("Không có file nào hợp lệ để in.");
+        if (validPrinterFiles.printDataList.length === 0) {
+            setPopupConfig({
+                title: "Lỗi",
+                message: "Bạn chưa upload file nào cả.",
+                showRetry: false,
+                onRetry: null,
+            });
+            setIsPopupVisible(true);
             return;
         }
 
         const token = localStorage.getItem("accessToken");
         const printService = new PrinterOperation();
+        if (printerIndex === null) {
+            setPopupConfig({
+                title: "Lỗi",
+                message: "Hãy chọn một máy in phù hợp.",
+                showRetry: false,
+                onRetry: null,
+            });
+            setIsPopupVisible(true);
+            return;
+        }
         const printerId = Number(printerOptions[printerIndex ?? 0].id);
+
         console.log(printerId);
 
         try {
@@ -221,6 +241,7 @@ export default function FileUploader() {
 
             if (unAcceptedList.length === 0) {
                 // Không có file nào bị từ chối, gọi hàm printFile
+                console.log(token);
                 await printService.printFile(
                     printerId,
                     validPrinterFiles,
@@ -228,7 +249,7 @@ export default function FileUploader() {
                 );
                 setPopupConfig({
                     title: "Thành công",
-                    message: "In file thành công.",
+                    message: "In file(s) thành công.",
                     showRetry: false,
                     onRetry: null,
                 });
@@ -236,11 +257,11 @@ export default function FileUploader() {
             } else {
                 setPopupConfig({
                     title: "Lỗi",
-                    message: "Có file không thể in, bạn có muốn tiếp tục?",
+                    message: "Có file(s) không thể in, bạn có muốn tiếp tục?",
                     showRetry: true,
                     onRetry: () => {
                         printFile();
-                        console.log("Người dùng nhấn thử lại");
+                        console.log("Người dùng nhấn tiếp tục");
                         setIsPopupVisible(false); // Đóng popup sau khi nhấn "Thử lại"
                     },
                 });
@@ -266,6 +287,7 @@ export default function FileUploader() {
         }
 
         const token = localStorage.getItem("accessToken");
+        console.log(token);
         const printService = new PrinterOperation();
         const printerId = Number(printerOptions[printerIndex ?? 0].id);
         await printService.printFile(
@@ -322,9 +344,20 @@ export default function FileUploader() {
     // Hàm gọi API để lấy danh sách máy in
     const fetchAvailablePrinters = async () => {
         try {
-            const printerService = new PrinterOperation();
+            setFindingPrinter(true);
             const printerAvailablePayload: SearchAvailableDto = calculatePageRequirements(selectedFiles);
-            console.log(printerAvailablePayload);
+            if (printerAvailablePayload.A3Require === 0 && printerAvailablePayload.A4Require === 0 && printerAvailablePayload.A5Require === 0) {
+                setPopupConfig({
+                    title: "Lỗi",
+                    message: "Bạn chưa upload file nào hợp lệ cả.",
+                    showRetry: false,
+                    onRetry: null,
+                });
+                setFindingPrinter(false);
+                setIsPopupVisible(true);
+                return;
+            }
+            const printerService = new PrinterOperation();
             const token = localStorage.getItem("accessToken");
             const response = await printerService.searchAvailablePrinter(printerAvailablePayload, token ?? "");
             if (!response?.success) {
@@ -334,7 +367,10 @@ export default function FileUploader() {
 
             const data = await transformPrinterData(response.data);
             setPrinterOptions(data || []); // Giả định API trả về danh sách máy in trong `data.printers`
+            setPrinterIndex(data.length > 0 ? 0 : null);
+            setFindingPrinter(false);
         } catch (error) {
+            setFindingPrinter(false);
             console.error(error.message);
             return [];
         }
@@ -380,6 +416,7 @@ export default function FileUploader() {
 
     return (
         <div>
+            <h2 className="text-2xl font-bold text-blue-700 mb-6">In tài liệu</h2>
             <div className="p-6 flex">
                 {/* Khung chỉnh sửa và tải file */}
                 <div className="w-2/3 bg-white rounded-lg shadow-lg p-6 mr-4">
@@ -403,68 +440,71 @@ export default function FileUploader() {
                         ))}
                     </div>
 
-
                     {currentFileIndex !== null ? (
                         <div className="border-2 border-gray-300 rounded-lg p-4">
                             <h2 className="text-xl font-bold mb-4">
                                 Chỉnh sửa thuộc tính: {selectedFiles[currentFileIndex].file.name}
                             </h2>
-                            {selectedFiles[currentFileIndex].uploadStatus !== "error" ? (<div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-sm font-medium">Khổ giấy</label>
-                                    <select
-                                        value={selectedFiles[currentFileIndex].paperSize}
-                                        onChange={handleAttributeChange("paperSize")}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                                    >
-                                        <option value="" disabled>
-                                            Chọn khổ giấy
-                                        </option>
-                                        {paperSizeOptions.map((option) => (
-                                            <option key={option} value={option}>
-                                                {option}
+                            {selectedFiles[currentFileIndex].uploadStatus !== "error" ? (
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium">Khổ giấy</label>
+                                        <select
+                                            value={selectedFiles[currentFileIndex].paperSize}
+                                            onChange={handleAttributeChange("paperSize")}
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                                        >
+                                            <option value="" disabled>
+                                                Chọn khổ giấy
                                             </option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium">Kiểu in</label>
-                                    <select
-                                        value={selectedFiles[currentFileIndex].printMode}
-                                        onChange={handleAttributeChange("printMode")}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                                    >
-                                        <option value="" disabled>
-                                            Chọn kiểu in
-                                        </option>
-                                        {printModeOptions.map((option) => (
-                                            <option key={option} value={option}>
-                                                {option}
+                                            {paperSizeOptions.map((option) => (
+                                                <option key={option} value={option}>
+                                                    {option}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium">Kiểu in</label>
+                                        <select
+                                            value={selectedFiles[currentFileIndex].printMode}
+                                            onChange={handleAttributeChange("printMode")}
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                                        >
+                                            <option value="" disabled>
+                                                Chọn kiểu in
                                             </option>
-                                        ))}
-                                    </select>
+                                            {printModeOptions.map((option) => (
+                                                <option key={option} value={option}>
+                                                    {option}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium">Số bản in</label>
+                                        <input
+                                            type="text"
+                                            value={selectedFiles[currentFileIndex].copies}
+                                            onChange={handleAttributeChange("copies")}
+                                            placeholder="VD: 1"
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium">Giới hạn trang in</label>
+                                        <input
+                                            type="text"
+                                            value={selectedFiles[currentFileIndex].pageRange}
+                                            onChange={handleAttributeChange("pageRange")}
+                                            placeholder="VD: 5-7, 9-11"
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                                        />
+                                    </div>
                                 </div>
-                                <div>
-                                    <label className="block text-sm font-medium">Số bản in</label>
-                                    <input
-                                        type="text"
-                                        value={selectedFiles[currentFileIndex].copies}
-                                        onChange={handleAttributeChange("copies")}
-                                        placeholder="VD: 1"
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium">Giới hạn trang in</label>
-                                    <input
-                                        type="text"
-                                        value={selectedFiles[currentFileIndex].pageRange}
-                                        onChange={handleAttributeChange("pageRange")}
-                                        placeholder="VD: 5-7, 9-11"
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                                    />
-                                </div>
-                            </div>) : (<p></p>)}
+                            ) : (
+                                <p></p>
+                            )}
                         </div>
                     ) : (
                         <p className="text-gray-600">Chọn một tệp từ danh sách để chỉnh sửa.</p>
@@ -483,8 +523,13 @@ export default function FileUploader() {
                                 onClick={() => handleSelectFile(index)}
                             >
                                 <div>
-                                    <span className="truncate font-medium text-black">
-                                        {fileWithAttr.file.name}
+                                    <span className="font-medium text-black w-48">
+                                        {fileWithAttr.file.name.length > 30
+                                            ? fileWithAttr.file.name.substring(0, 30) + "... "
+                                            : fileWithAttr.file.name + " "}
+                                    </span>
+                                    <span className="font-medium text-black w-48">
+                                        ({fileWithAttr.pageCount} trang)
                                     </span>
                                     <span className="block text-sm text-gray-600">
                                         {fileWithAttr.uploadStatus === "uploading"
@@ -494,10 +539,10 @@ export default function FileUploader() {
                                                 : "Tải lên thất bại. Lỗi: " + fileWithAttr.errorMsg}
                                     </span>
                                     {fileWithAttr.isAccepted === 1 && (
-                                        <span className="block text-sm text-green-500">Đã chấp nhận</span>
+                                        <span className="block text-sm text-green-500">In thành công</span>
                                     )}
-                                    {fileWithAttr.isAccepted === -1 && (
-                                        <span className="block text-sm text-red-500">Không được chấp nhận</span>
+                                    {fileWithAttr.isAccepted === -1 && fileWithAttr.uploadStatus === "success" && (
+                                        <span className="block text-sm text-red-500">Bạn không đủ giấy!</span>
                                     )}
                                     {fileWithAttr.isAccepted === 0 && (
                                         <span className="block text-sm text-gray-500">Chưa xác định</span>
@@ -541,7 +586,7 @@ export default function FileUploader() {
                             Tìm máy in
                         </button>
                         {/* Hiển thị máy in */}
-                        {printerOptions.length > 0 ? (
+                        {findingPrinter ? <div>Đang tìm máy in...</div> : printerOptions.length > 0 ? (
                             <div>
                                 <label className="block text-sm font-medium text-black">Máy in</label>
                                 <select
