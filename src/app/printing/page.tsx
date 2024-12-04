@@ -81,6 +81,7 @@ export default function FileUploader() {
         onRetry: null,
     });
     const [findingPrinter, setFindingPrinter] = useState(false);
+    const [confirm, setConfirm] = useState(false);
 
     const fetchConfig = async () => {
         try {
@@ -92,7 +93,7 @@ export default function FileUploader() {
                 setAllowedFiles(config.allowedFiles); // Lưu danh sách file được phép
             }
         } catch (err) {
-            console.error(err);
+            // console.error(err);
         }
     };
 
@@ -247,6 +248,7 @@ export default function FileUploader() {
                     validPrinterFiles,
                     token ?? ""
                 );
+                setConfirm(true);
                 setPopupConfig({
                     title: "Thành công",
                     message: "In file(s) thành công.",
@@ -261,6 +263,7 @@ export default function FileUploader() {
                     showRetry: true,
                     onRetry: () => {
                         printFile();
+                        setConfirm(true);
                         console.log("Người dùng nhấn tiếp tục");
                         setIsPopupVisible(false); // Đóng popup sau khi nhấn "Thử lại"
                     },
@@ -271,10 +274,10 @@ export default function FileUploader() {
             if (response?.success) {
                 console.log(`Gửi dữ liệu in thành công cho máy in ID: ${printerId}`, response.data);
             } else {
-                console.error(`Lỗi khi gửi dữ liệu in cho máy in ID: ${printerId}`, response?.message);
+                // console.error(`Lỗi khi gửi dữ liệu in cho máy in ID: ${printerId}`, response?.message);
             }
         } catch (error) {
-            console.error(`Lỗi kết nối khi gửi dữ liệu cho máy in ID: ${printerId}`, error);
+            // console.error(`Lỗi kết nối khi gửi dữ liệu cho máy in ID: ${printerId}`, error);
         }
     };
 
@@ -371,7 +374,7 @@ export default function FileUploader() {
             setFindingPrinter(false);
         } catch (error) {
             setFindingPrinter(false);
-            console.error(error.message);
+            // console.error(error.message);
             return [];
         }
     };
@@ -528,18 +531,18 @@ export default function FileUploader() {
                                             ? fileWithAttr.file.name.substring(0, 30) + "... "
                                             : fileWithAttr.file.name + " "}
                                     </span>
-                                    <span className="font-medium text-black w-48">
+                                    {fileWithAttr.uploadStatus === "success" && <span className="font-medium text-black w-48">
                                         ({fileWithAttr.pageCount} trang)
-                                    </span>
+                                    </span>}
                                     <span className="block text-sm text-gray-600">
                                         {fileWithAttr.uploadStatus === "uploading"
                                             ? "Đang tải..."
                                             : fileWithAttr.uploadStatus === "success"
                                                 ? "Tải lên thành công"
-                                                : "Tải lên thất bại. Lỗi: " + fileWithAttr.errorMsg}
+                                                : "Tải lên thất bại. " + fileWithAttr.errorMsg}
                                     </span>
                                     {fileWithAttr.isAccepted === 1 && (
-                                        <span className="block text-sm text-green-500">In thành công</span>
+                                        <span className="block text-sm text-green-500">{confirm?"In thành công":"Có thể in"}</span>
                                     )}
                                     {fileWithAttr.isAccepted === -1 && fileWithAttr.uploadStatus === "success" && (
                                         <span className="block text-sm text-red-500">Bạn không đủ giấy!</span>
@@ -585,6 +588,14 @@ export default function FileUploader() {
                         >
                             Tìm máy in
                         </button>
+                        {selectedFiles.length > 0 && <button
+                            onClick={() => {
+                                window.location.href = "/printing";
+                            }}
+                            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                        >
+                            Thực hiện lại
+                        </button>}
                         {/* Hiển thị máy in */}
                         {findingPrinter ? <div>Đang tìm máy in...</div> : printerOptions.length > 0 ? (
                             <div>

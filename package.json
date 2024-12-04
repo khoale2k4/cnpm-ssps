@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev2": "next dev -p 3002",
+    "dev0": "next dev -p 3000",
     "build": "tailwindcss -i build src/app/global.css -o dist/styles.css",
     "start": "next start",
     "lint": "next lint"

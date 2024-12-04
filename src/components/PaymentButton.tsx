@@ -40,7 +40,7 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({ selectedType, soTrangCanM
         alert(data.message || "Đã xảy ra lỗi trong quá trình thanh toán.");
       }
     } catch (error) {
-      console.error("Lỗi khi gọi API:", error);
+      // console.error("Lỗi khi gọi API:", error);
       alert("Không thể thực hiện thanh toán.");
     } finally {
       setLoading(false);

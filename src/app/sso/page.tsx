@@ -40,7 +40,7 @@ export default function SSO() {
 
 
         // Điều hướng đến trang chính hoặc dashboard
-        router.push("/");
+        window.location.href = "/";
       } else {
         // Nếu đăng nhập thất bại
         setErrorMessage(
@@ -48,7 +48,7 @@ export default function SSO() {
         );
       }
     } catch (error) {
-      console.error("Lỗi khi gọi API:", error);
+      // console.error("Lỗi khi gọi API:", error);
       setErrorMessage(
         "Đã xảy ra lỗi trong quá trình đăng nhập. Vui lòng thử lại."
       );

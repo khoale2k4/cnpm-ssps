@@ -5,46 +5,52 @@ import { FaUserCircle } from "react-icons/fa";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
+import { User } from "@/main";
 
 const Navbar: React.FC = () => {
   const { isLoggedIn, setLoggedIn } = useAuth();
   const [user, setUser] = useState<any | null>(null);
+  const [userInfo, setUserInfo] = useState<any | null>(null); // Thông tin từ API
   const [loading, setLoading] = useState(true);
-  const [isHovered, setIsHovered] = useState(false); // Trạng thái hover
+  const [isHovered, setIsHovered] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    // Hàm cập nhật trạng thái user từ localStorage
-    const updateUserFromStorage = () => {
-      const storedUser = localStorage.getItem("user");
-      const token = localStorage.getItem("accessToken");
+    // Lấy user từ localStorage
+    const storedUser = localStorage.getItem("user");
+    const token = localStorage.getItem("accessToken");
 
-      if (token && storedUser) {
-        setUser(JSON.parse(storedUser));
-        setLoggedIn(true);
-      } else {
-        setLoggedIn(false);
-        setUser(null);
-      }
-    };
+    if (token && storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      console.log(parsedUser);
+      setUser(parsedUser);
+      setLoggedIn(true);
 
-    // Gọi hàm khi component được mount
-    updateUserFromStorage();
+      // Gọi API lấy thông tin người dùng
+      const fetchUserInfo = async () => {
+        try {
+          const userService = new User();
+          const response = await userService.getInfo(parsedUser.ssoId, token);
+          console.log(response);
 
-    // Lắng nghe sự kiện storage
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === "user" || e.key === "accessToken") {
-        updateUserFromStorage();
-      }
-    };
+          if (response?.success) {
+            const data = await response.data;
+            setUserInfo(data);
+          } else {
+            // console.error("Failed to fetch user info");
+          }
+        } catch (error) {
+          // console.error("Error fetching user info:", error);
+        }
+      };
 
-    window.addEventListener("storage", handleStorageChange);
+      fetchUserInfo();
+    } else {
+      setLoggedIn(false);
+      setUser(null);
+    }
 
     setLoading(false);
-
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
   }, [setLoggedIn]);
 
   const handleLogout = () => {
@@ -103,16 +109,16 @@ const Navbar: React.FC = () => {
               onMouseLeave={() => setIsHovered(false)}
             >
               <FaUserCircle className="text-3x1 text-gray-600 cursor-pointer" />
-              {isHovered && (
+              {isHovered && userInfo && (
                 <div className="absolute top-10 right-0 bg-white shadow-lg p-4 rounded-md w-80 z-50">
-                  <p><strong>Email:</strong> {user.email}</p>
-                  <p><strong>Số điện thoại:</strong> {user.phone}</p>
-                  <p><strong>Vai trò:</strong> {user.role}</p>
+                  <p><strong>Email:</strong> {userInfo.email}</p>
+                  <p><strong>Số điện thoại:</strong> {userInfo.phone}</p>
+                  <p><strong>Vai trò:</strong> {userInfo.role}</p>
                   <p>
-                    <strong>Giấy miễn phí:</strong> {user.student?.currentFreePaper}
+                    <strong>Giấy miễn phí:</strong> {userInfo.student.currentFreePaper}
                   </p>
                   <p>
-                    <strong>Giấy đã mua:</strong> {user.student?.boughtPaper}
+                    <strong>Giấy đã mua:</strong> {userInfo.student.boughtPaper}
                   </p>
                 </div>
               )}

@@ -2,7 +2,7 @@
 
 import { User } from "@/main";
 import { useState, useEffect } from "react";
-import listPrice from "../../../../SPSS_BE/src/modules/payment/list_price.json"; // Import file JSON
+import listPrice from "../../../../SPSS_BE1/SPSS_BE/src/modules/payment/list_price.json"; // Import file JSON
 import PaymentButton from "@/components/PaymentButton";
 
 export default function MuaTrangIn() {
@@ -22,7 +22,7 @@ export default function MuaTrangIn() {
       const userId = localStorage.getItem("userId");
 
       if (!token || !userId) {
-        console.error("Token hoặc userId không tồn tại trong localStorage");
+        // console.error("Token hoặc userId không tồn tại trong localStorage");
         return;
       }
 
@@ -34,10 +34,10 @@ export default function MuaTrangIn() {
         // Gán giá trị số trang hiện có
         setSoTrangHienCo(data.data.student.boughtPaper + data.data.student.currentFreePaper);
       } else {
-        console.error("Lỗi lấy dữ liệu người dùng:", data?.message || "Không rõ nguyên nhân");
+        // console.error("Lỗi lấy dữ liệu người dùng:", data?.message || "Không rõ nguyên nhân");
       }
     } catch (error) {
-      console.error("Có lỗi khi gọi API:", error);
+      // console.error("Có lỗi khi gọi API:", error);
     }
   };
 

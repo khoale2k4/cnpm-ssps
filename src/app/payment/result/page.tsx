@@ -27,7 +27,7 @@ export default function PaymentResult() {
           const userId = localStorage.getItem("userId");
 
           if (!token || !userId) {
-            console.error("Token hoặc userId không tồn tại.");
+            // console.error("Token hoặc userId không tồn tại.");
             return;
           }
 
@@ -44,7 +44,7 @@ export default function PaymentResult() {
             }),
           });
         } catch (error) {
-          console.error("Cập nhật thất bại:", error);
+          // console.error("Cập nhật thất bại:", error);
         }
       };
 

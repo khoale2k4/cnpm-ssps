@@ -86,10 +86,10 @@ export default function LichSuIn() {
     
                 setData(formattedData); 
             } else {
-                console.error("Không thể lấy dữ liệu:", response?.message);
+                // console.error("Không thể lấy dữ liệu:", response?.message);
             }
         } catch (error) {
-            console.error("Lỗi khi fetch dữ liệu:", error);
+            // console.error("Lỗi khi fetch dữ liệu:", error);
         }
     };
     
